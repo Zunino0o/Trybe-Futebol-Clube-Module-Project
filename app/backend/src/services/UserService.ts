@@ -27,6 +27,17 @@ export default class UserService {
       const token = this.jwtService.sign({ email });
       return { status: 'SUCCESSFUL', data: { token } };
     }
-    return { status: 'NOT_FOUND', data: { message: 'User not found' } };
+    return {
+      status: 'INVALID_DATA',
+      data: { message: 'Invalid email or password' },
+    };
+  }
+
+  public async getRole(
+    token: string,
+  ): Promise<ServiceResponse<{ role: string }>> {
+    const { email } = await this.jwtService.verify(token) as { email: string };
+    const { role } = await this.userModel.findByEmail(email) as IUser;
+    return { status: 'SUCCESSFUL', data: { role } };
   }
 }
