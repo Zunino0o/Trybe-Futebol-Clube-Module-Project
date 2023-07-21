@@ -1,6 +1,7 @@
 import { ServiceMessage, ServiceResponse } from '../Interfaces/ServiceResponse';
 import MatchModel from '../models/MatchModel';
 import { IMatch } from '../Interfaces/matches/IMatch';
+import { IMatchUpdate } from '../Interfaces/matches/IMatchUpdate';
 
 export default class MatchService {
   constructor(private matchModel: MatchModel = new MatchModel()) {}
@@ -17,6 +18,22 @@ export default class MatchService {
     }
 
     const update = await this.matchModel.update(id, { inProgress: false });
+    if (!update) {
+      return { status: 'CONFLICT', data: { message: `Match ${id} already updated` } };
+    }
+    return { status: 'SUCCESSFUL', data: { message: 'Finished' } };
+  }
+
+  public async update(
+    id: IMatch['id'],
+    data: IMatchUpdate,
+  ): Promise<ServiceResponse<ServiceMessage>> {
+    const match = await this.matchModel.findById(id);
+    if (!match) {
+      return { status: 'NOT_FOUND', data: { message: `Match ${id} not found` } };
+    }
+
+    const update = await this.matchModel.update(id, data);
     if (!update) {
       return { status: 'CONFLICT', data: { message: `Match ${id} already updated` } };
     }

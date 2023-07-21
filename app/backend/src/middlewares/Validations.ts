@@ -21,8 +21,11 @@ export default class Validations {
     next();
   }
 
-  static async validateToken(req: Request, res: Response, next: NextFunction):
-  Promise<Response | void> {
+  static async validateToken(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<Response | void> {
     const token = req.headers.authorization;
     if (!token) {
       return res.status(401).json({ message: 'Token not found' });
@@ -31,6 +34,19 @@ export default class Validations {
     if (validToken === 'Token must be a valid token') {
       return res.status(401).json({ message: validToken });
     }
+    next();
+  }
+
+  static validateUpdateBody(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Response | void {
+    const { homeTeamGoals, awayTeamGoals } = req.body;
+    if (!homeTeamGoals || !awayTeamGoals) {
+      return res.status(400).json({ message: 'Missing data' });
+    }
+
     next();
   }
 }
