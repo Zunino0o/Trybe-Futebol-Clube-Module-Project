@@ -1,4 +1,4 @@
-import SequelizeMatches from '../database/models/SequelizeMatches';
+import SequelizeMatches from '../database/models/SequelizeMatch';
 import { IMatch } from '../Interfaces/matches/IMatch';
 import { IMatchModel } from '../Interfaces/matches/IMatchModel';
 import { NewEntity } from '../Interfaces';
@@ -12,13 +12,13 @@ export default class MatchModel implements IMatchModel {
     return match;
   }
 
-  private static progressCheck(inProgress?: string) {
-    return !inProgress ? {} : { where: { inProgress: inProgress === 'true' } };
+  private static progressCheck(data?: string) {
+    return !data ? {} : { inProgress: data === 'true' };
   }
 
   async findAll(inProgress?: string): Promise<IMatch[]> {
     const dbData = await this.model.findAll({
-      ...MatchModel.progressCheck(inProgress),
+      where: { ...MatchModel.progressCheck(inProgress) },
       include: [
         {
           model: SequelizeTeam,

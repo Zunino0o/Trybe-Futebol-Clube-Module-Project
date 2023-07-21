@@ -9,10 +9,10 @@ class App {
 
     this.config();
 
-    this.routes();
-
     // Não remover essa rota
     this.app.get('/', (req, res) => res.json({ ok: true }));
+
+    this.routes();
   }
 
   private config(): void {

@@ -2,7 +2,7 @@ import { DataTypes, Model, QueryInterface } from 'sequelize';
 import { IUser } from '../../Interfaces/users/IUser';
 
 export default {
-  up(queryInterface: QueryInterface) {
+  async up(queryInterface: QueryInterface) {
     return queryInterface.createTable<Model<IUser>>('users', {
       id: {
         type: DataTypes.INTEGER,
@@ -21,6 +21,7 @@ export default {
       email: {
         type: DataTypes.STRING,
         allowNull: false,
+        unique: true,
       },
       password: {
         type: DataTypes.STRING,
@@ -28,7 +29,7 @@ export default {
       },
     });
   },
-  down(queryInterface: QueryInterface) {
+  async down(queryInterface: QueryInterface) {
     return queryInterface.dropTable('users');
   },
 };

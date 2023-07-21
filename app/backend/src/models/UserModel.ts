@@ -7,34 +7,32 @@ export default class UserModel implements IUserModel {
   private model = SequelizeUser;
 
   async create(data: NewEntity<IUser>): Promise<IUser> {
-    const user = await this.model.create(data);
-    const { id, username, role, email, password } = user;
-    return { id, username, role, email, password };
+    const newUser = await this.model.create(data);
+    return newUser;
   }
 
   async findAll(): Promise<IUser[]> {
-    const dbData = await this.model.findAll();
-    return dbData.map(({ id, role, username, email, password }) => ({
-      id,
-      role,
-      username,
-      email,
-      password,
-    }));
+    const dbData = await this.model.findAll({
+      attributes: { exclude: ['password'] },
+    });
+    return dbData;
   }
 
   async findById(id: IUser['id']): Promise<IUser | null> {
-    const user = await this.model.findByPk(id);
+    const user = await this.model.findByPk(id, {
+      attributes: { exclude: ['password'] },
+    });
     if (!user) return null;
-    const { username, role, email, password } = user;
-    return { id, username, role, email, password };
+    return user;
   }
 
   async findByEmail(email: IUser['email']): Promise<IUser | null> {
-    const user = await this.model.findOne({ where: { email } });
+    const user = await this.model.findOne({
+      where: { email },
+      attributes: { exclude: ['password'] },
+    });
     if (!user) return null;
-    const { id, username, role, password } = user;
-    return { id, username, role, email, password };
+    return user;
   }
 
   async update(id: IUser['id'], data: Partial<IUser>): Promise<IUser | null> {
