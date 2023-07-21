@@ -12,8 +12,13 @@ export default class MatchModel implements IMatchModel {
     return match;
   }
 
-  async findAll(): Promise<IMatch[]> {
+  private static progressCheck(inProgress?: string) {
+    return !inProgress ? {} : { where: { inProgress: inProgress === 'true' } };
+  }
+
+  async findAll(inProgress?: string): Promise<IMatch[]> {
     const dbData = await this.model.findAll({
+      ...MatchModel.progressCheck(inProgress),
       include: [
         {
           model: SequelizeTeam,
