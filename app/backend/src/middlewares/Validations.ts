@@ -30,7 +30,9 @@ export default class Validations {
     if (!token) {
       return res.status(401).json({ message: 'Token not found' });
     }
-    const validToken = await JWT.verify(token);
+    const split = token.split(' ');
+    const trueToken = split[split.length - 1];
+    const validToken = await JWT.verify(trueToken);
     if (validToken === 'Token must be a valid token') {
       return res.status(401).json({ message: validToken });
     }
