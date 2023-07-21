@@ -26,4 +26,12 @@ export default class MatchController {
     }
     return res.status(200).json(data);
   }
+
+  public async create(req: Request, res: Response) {
+    const { status, data } = await this.matchService.create(req.body);
+    if (status !== 'SUCCESSFUL') {
+      return res.status(mapStatusHTTP(status)).json(data);
+    }
+    return res.status(201).json(data);
+  }
 }
