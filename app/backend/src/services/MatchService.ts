@@ -62,8 +62,8 @@ export default class MatchService {
   private async validateTeams(homeTeamId: number, awayTeamId: number) {
     if (homeTeamId === awayTeamId) {
       return {
-        status: 'INVALID_DATA',
-        data: { message: 'Teams must be diferent' },
+        status: 'UNPPROCESSABLE_ENTITY',
+        data: { message: 'It is not possible to create a match with two equal teams' },
       };
     }
     const homeTeam = await this.teamModel.findById(homeTeamId);
@@ -71,7 +71,7 @@ export default class MatchService {
     if (!homeTeam || !awayTeam) {
       return {
         status: 'NOT_FOUND',
-        data: { message: 'Teams not found' },
+        data: { message: 'There is no team with such id!' },
       };
     }
   }

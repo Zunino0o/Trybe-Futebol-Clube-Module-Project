@@ -24,11 +24,13 @@ export default class MatchModel implements IMatchModel {
           model: SequelizeTeam,
           as: 'homeTeam',
           foreignKey: 'homeTeamId',
+          attributes: { exclude: ['id'] },
         },
         {
           model: SequelizeTeam,
           as: 'awayTeam',
           foreignKey: 'awayTeamId',
+          attributes: { exclude: ['id'] },
         },
       ],
     });
@@ -42,11 +44,13 @@ export default class MatchModel implements IMatchModel {
           model: SequelizeTeam,
           as: 'homeTeam',
           foreignKey: 'homeTeamId',
+          attributes: { exclude: ['id'] },
         },
         {
           model: SequelizeTeam,
           as: 'awayTeam',
           foreignKey: 'awayTeamId',
+          attributes: { exclude: ['id'] },
         },
       ],
     });
