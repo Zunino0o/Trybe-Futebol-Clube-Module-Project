@@ -1,18 +1,18 @@
 import SequelizeMatches from '../database/models/SequelizeMatches';
-import { IMatches } from '../Interfaces/matches/IMatches';
-import { IMatchesModel } from '../Interfaces/matches/IMatchesModel';
+import { IMatch } from '../Interfaces/matches/IMatch';
+import { IMatchModel } from '../Interfaces/matches/IMatchModel';
 import { NewEntity } from '../Interfaces';
 import SequelizeTeam from '../database/models/SequelizeTeam';
 
-export default class MatchesModel implements IMatchesModel {
+export default class MatchModel implements IMatchModel {
   private model = SequelizeMatches;
 
-  async create(data: NewEntity<IMatches>): Promise<IMatches> {
+  async create(data: NewEntity<IMatch>): Promise<IMatch> {
     const match = await this.model.create(data);
     return match;
   }
 
-  async findAll(): Promise<IMatches[]> {
+  async findAll(): Promise<IMatch[]> {
     const dbData = await this.model.findAll({
       include: [
         {
@@ -30,7 +30,7 @@ export default class MatchesModel implements IMatchesModel {
     return dbData;
   }
 
-  async findById(id: IMatches['id']): Promise<IMatches | null> {
+  async findById(id: IMatch['id']): Promise<IMatch | null> {
     const match = await this.model.findByPk(id, {
       include: [
         {
@@ -50,16 +50,16 @@ export default class MatchesModel implements IMatchesModel {
   }
 
   async update(
-    id: IMatches['id'],
-    data: Partial<IMatches>,
-  ): Promise<IMatches | null> {
+    id: IMatch['id'],
+    data: Partial<IMatch>,
+  ): Promise<IMatch | null> {
     const [affectedRows] = await this.model.update(data, { where: { id } });
     if (affectedRows === 0) return null;
 
     return this.findById(id);
   }
 
-  async delete(id: IMatches['id']): Promise<number> {
+  async delete(id: IMatch['id']): Promise<number> {
     return this.model.destroy({ where: { id } });
   }
 }
