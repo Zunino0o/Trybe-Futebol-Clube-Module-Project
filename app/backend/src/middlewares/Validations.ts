@@ -26,16 +26,18 @@ export default class Validations {
     res: Response,
     next: NextFunction,
   ): Promise<Response | void> {
-    const token = req.headers.authorization;
-    if (!token) {
+    const { authorization } = req.headers;
+    if (!authorization) {
       return res.status(401).json({ message: 'Token not found' });
     }
-    const split = token.split(' ');
-    const trueToken = split[split.length - 1];
-    const validToken = await JWT.verify(trueToken);
-    if (validToken === 'Token must be a valid token') {
-      return res.status(401).json({ message: validToken });
+    const split = authorization.split(' ');
+    const decodedToken = await JWT.verify(split[1]);
+    if (decodedToken === 'Token must be a valid token') {
+      return res.status(401).json({ message: decodedToken });
     }
+
+    res.locals.userData = decodedToken;
+
     next();
   }
 

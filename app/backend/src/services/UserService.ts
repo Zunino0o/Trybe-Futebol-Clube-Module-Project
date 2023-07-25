@@ -23,8 +23,8 @@ export default class UserService {
           data: { message: 'Invalid email or password' },
         };
       }
-      const { email } = user as IUser;
-      const token = this.jwtService.sign({ email });
+      const { id, email, role } = user as IUser;
+      const token = this.jwtService.sign({ id, email, role });
       return { status: 'SUCCESSFUL', data: { token } };
     }
     return {
@@ -33,11 +33,11 @@ export default class UserService {
     };
   }
 
-  public async getRole(
-    token: string,
-  ): Promise<ServiceResponse<{ role: string }>> {
-    const { email } = await this.jwtService.verify(token) as { email: string };
-    const { role } = await this.userModel.findByEmail(email) as IUser;
-    return { status: 'SUCCESSFUL', data: { role } };
-  }
+  // public async getRole(
+  //   token: string,
+  // ): Promise<ServiceResponse<{ role: string }>> {
+  //   const { email } = await this.jwtService.verify(token) as { email: string };
+  //   const { role } = await this.userModel.findByEmail(email) as IUser;
+  //   return { status: 'SUCCESSFUL', data: { role } };
+  // }
 }
