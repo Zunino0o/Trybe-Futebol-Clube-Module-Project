@@ -19,7 +19,7 @@ export default class UserService {
     if (user) {
       if (!bcrypt.compareSync(data.password, user.password)) {
         return {
-          status: 'INVALID_DATA',
+          status: 'UNAUTHORIZED',
           data: { message: 'Invalid email or password' },
         };
       }
@@ -28,7 +28,7 @@ export default class UserService {
       return { status: 'SUCCESSFUL', data: { token } };
     }
     return {
-      status: 'INVALID_DATA',
+      status: 'UNAUTHORIZED',
       data: { message: 'Invalid email or password' },
     };
   }
