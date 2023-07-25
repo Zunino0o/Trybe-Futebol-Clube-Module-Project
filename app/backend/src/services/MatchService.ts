@@ -1,4 +1,8 @@
-import { ServiceMessage, ServiceResponse } from '../Interfaces/ServiceResponse';
+import {
+  ServiceMessage,
+  ServiceResponse,
+  ServiceResponseError,
+} from '../Interfaces/ServiceResponse';
 import MatchModel from '../models/MatchModel';
 import { IMatch } from '../Interfaces/matches/IMatch';
 import { IMatchUpdate } from '../Interfaces/matches/IMatchUpdate';
@@ -59,28 +63,38 @@ export default class MatchService {
     return { status: 'SUCCESSFUL', data: { message: 'Finished' } };
   }
 
-  private async validateTeams(homeTeamId: number, awayTeamId: number) {
-    if (homeTeamId === awayTeamId) {
-      return {
-        status: 'UNPPROCESSABLE_ENTITY',
-        data: { message: 'It is not possible to create a match with two equal teams' },
-      };
-    }
-    const homeTeam = await this.teamModel.findById(homeTeamId);
-    const awayTeam = await this.teamModel.findById(awayTeamId);
+  private async validateTeams(ht: number, at: number): Promise<ServiceResponseError | undefined> {
+    const homeTeam = await this.teamModel.findById(ht);
+    const awayTeam = await this.teamModel.findById(at);
     if (!homeTeam || !awayTeam) {
       return {
         status: 'NOT_FOUND',
         data: { message: 'There is no team with such id!' },
       };
     }
+    if (homeTeam.id === awayTeam.id) {
+      return {
+        status: 'UNPPROCESSABLE_ENTITY',
+        data: {
+          message: 'It is not possible to create a match with two equal teams',
+        },
+      };
+    }
   }
 
   public async create(
-    data: NewEntity<IMatch>,
+    payload: NewEntity<IMatch>,
   ): Promise<ServiceResponse<IMatch>> {
-    await this.validateTeams(data.homeTeamId, data.awayTeamId);
-    const newMatch = await this.matchModel.create({ ...data, inProgress: true });
+    const validation = await this.validateTeams(
+      payload.homeTeamId,
+      payload.awayTeamId,
+    );
+    if (validation) return { status: validation.status, data: validation.data };
+
+    const newMatch = await this.matchModel.create({
+      ...payload,
+      inProgress: true,
+    });
     return { status: 'SUCCESSFUL', data: newMatch };
   }
 }
