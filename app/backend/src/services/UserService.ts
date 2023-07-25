@@ -16,21 +16,16 @@ export default class UserService {
     data: ILogin,
   ): Promise<ServiceResponse<ServiceMessage | IToken>> {
     const user = await this.userModel.findByEmail(data.email);
-    if (user) {
-      if (!bcrypt.compareSync(data.password, user.password)) {
-        return {
-          status: 'UNAUTHORIZED',
-          data: { message: 'Invalid email or password' },
-        };
-      }
-      const { id, email, role } = user as IUser;
-      const token = this.jwtService.sign({ id, email, role });
-      return { status: 'SUCCESSFUL', data: { token } };
+    if (!user || !bcrypt.compareSync(data.password, user.password)) {
+      return {
+        status: 'UNAUTHORIZED',
+        data: { message: 'Invalid email or password' },
+      };
     }
-    return {
-      status: 'UNAUTHORIZED',
-      data: { message: 'Invalid email or password' },
-    };
+
+    const { id, email, role } = user as IUser;
+    const token = this.jwtService.sign({ id, email, role });
+    return { status: 'SUCCESSFUL', data: { token } };
   }
 
   // public async getRole(
