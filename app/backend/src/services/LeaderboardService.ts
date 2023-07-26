@@ -28,10 +28,34 @@ export default class LeaderboardService {
   }
 
   public async getAllAway(): Promise<ServiceResponse<ILeaderboard[]>> {
-    const finishedMatches = await this.matchModel.findAll('');
+    const finishedMatches = await this.matchModel.findAll('false');
+    const scores = (await this.teamModel.findAll()).map(
+      (data) => new TeamScores(data.teamName),
+    );
+    finishedMatches.forEach((match) => {
+      const { awayTeamId, homeTeamGoals, awayTeamGoals } = match;
+      const result = getResult(awayTeamGoals, homeTeamGoals);
+
+      scores[awayTeamId - 1].setResult(result, awayTeamGoals, homeTeamGoals);
+    });
+    const result = scores.map((team) => team.getData());
+    return { status: 'SUCCESSFUL', data: sortOutput(result) };
   }
 
   public async getAll(): Promise<ServiceResponse<ILeaderboard[]>> {
-    const finishedMatches = await this.matchModel.findAll('');
+    const finishedMatches = await this.matchModel.findAll('false');
+    const scores = (await this.teamModel.findAll()).map(
+      (data) => new TeamScores(data.teamName),
+    );
+    finishedMatches.forEach((match) => {
+      const { homeTeamId, homeTeamGoals, awayTeamId, awayTeamGoals } = match;
+      const homeResult = getResult(homeTeamGoals, awayTeamGoals);
+      const awayResult = getResult(awayTeamGoals, homeTeamGoals);
+
+      scores[homeTeamId - 1].setResult(homeResult, homeTeamGoals, awayTeamGoals);
+      scores[awayTeamId - 1].setResult(awayResult, awayTeamGoals, homeTeamGoals);
+    });
+    const result = scores.map((team) => team.getData());
+    return { status: 'SUCCESSFUL', data: sortOutput(result) };
   }
 }
