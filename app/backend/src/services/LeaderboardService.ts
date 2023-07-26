@@ -4,6 +4,7 @@ import TeamModel from '../models/TeamModel';
 import { ServiceResponse } from '../Interfaces/ServiceResponse';
 import TeamScores from '../utils/TeamScores';
 import getResult from '../utils/getResult';
+import sortOutput from '../utils/sortOutput';
 
 export default class LeaderboardService {
   constructor(
@@ -12,19 +13,18 @@ export default class LeaderboardService {
   ) {}
 
   public async getAllHome(): Promise<ServiceResponse<ILeaderboard[]>> {
-    const finishedMatches = await this.matchModel.findAll('');
+    const finishedMatches = await this.matchModel.findAll('false');
     const scores = (await this.teamModel.findAll()).map(
       (data) => new TeamScores(data.teamName),
     );
-
     finishedMatches.forEach((match) => {
       const { homeTeamId, homeTeamGoals, awayTeamGoals } = match;
       const result = getResult(homeTeamGoals, awayTeamGoals);
 
       scores[homeTeamId - 1].setResult(result, homeTeamGoals, awayTeamGoals);
     });
-
-    return { status: 'SUCCESSFUL', data: scores.map((team) => team.getData()) };
+    const result = scores.map((team) => team.getData());
+    return { status: 'SUCCESSFUL', data: sortOutput(result) };
   }
 
   public async getAllAway(): Promise<ServiceResponse<ILeaderboard[]>> {
