@@ -6,7 +6,13 @@ const userMock = {
     password: '$2a$12$x1R9nPMbzV8CV1/f1tHhWOGkfTDMLnibFuI4rVN3fNEIu4Y3TNRQO'  
   }
 
-const validToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJlbWFpbCI6InZhbGlkQHVzZXIuY29tIiwicm9sZSI6InVzZXIifQ.bkouKURuV8JAlbItyOP-gHpe-9l-C43BROLwvRW8-nk';
+const validToken = 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJlbWFpbCI6InZhbGlkQHVzZXIuY29tIiwicm9sZSI6InVzZXIifQ.bkouKURuV8JAlbItyOP-gHpe-9l-C43BROLwvRW8-nk';
+
+const invalidToken = 'invalidToken';
+
+const invalidTokenErrorMessage = {
+    message: 'Token must be a valid token',
+  };
 
 const validLogin = {
     email: 'vald@user.com',
@@ -16,5 +22,7 @@ const validLogin = {
   export {
     userMock,
     validToken,
+    invalidToken,
+    invalidTokenErrorMessage,
     validLogin,
   }

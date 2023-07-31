@@ -23,7 +23,7 @@ const matchMock = {
   homeTeamGoals: 1,
   awayTeamId: 2,
   awayTeamGoals: 1,
-  inProgress: false,
+  inProgress: true,
 };
 
 const validCreateMatchMock = {

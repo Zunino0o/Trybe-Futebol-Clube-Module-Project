@@ -72,7 +72,7 @@ const allTeamsMock = [
   
   const errorMock = {
     status: 404,
-    body: 'Team 69 not found',
+    body: { message: 'Team 69 not found' },
   }
   export {
     allTeamsMock,
